@@ -27,6 +27,10 @@ class Obstacle {
 
 	move() {
 		this.pos.x -= this.dx;
+
+		// if(this.game.background.dx === 10) {
+		// 	this.dx = 10
+		// }
 	}
 }
 

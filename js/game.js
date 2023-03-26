@@ -26,13 +26,13 @@ const Game = {
 		this.player = new Player(0, 0, this);
 		this.background = new Background(this);
 		this.bottles = [];
-		this.npc1 = new Npc (0, 0, "red", this)
-		this.npc2 = new Npc (0, 0, "yellow", this)
-		this.npc3 = new Npc (0, 0, "green", this)
-		this.lane1 = new Lane (0, 0.62, this, this.player)
-		this.lane2 = new Lane (0, 0.68, this, this.npc1)
-		this.lane3 = new Lane (0, 0.74, this, this.npc2)
-		this.lane4 = new Lane (0, 0.8, this, this.npc3)
+		this.npc1 = new Npc(0, 0, "red", this)
+		this.npc2 = new Npc(0, 0, "yellow", this)
+		this.npc3 = new Npc(0, 0, "green", this)
+		this.lane1 = new Lane(0, 0.62, this, this.player)
+		this.lane2 = new Lane(0, 0.68, this, this.npc1)
+		this.lane3 = new Lane(0, 0.74, this, this.npc2)
+		this.lane4 = new Lane(0, 0.8, this, this.npc3)
 
 
 	},
@@ -45,34 +45,30 @@ const Game = {
 
 			this.frameCounter++;
 
-			if (this.frameCounter % 100 === 0) this.lane1.generateObstacle();
-			if (this.frameCounter % 130 === 0) this.lane2.generateObstacle();
-			if (this.frameCounter % 160 === 0) this.lane3.generateObstacle();
-			if (this.frameCounter % 190 === 0) this.lane4.generateObstacle();
-			if (this.frameCounter % 123 === 0) this.generateBottle();
-			if (this.frameCounter === 3600) this.generateGoal();
-			// if (this.isCollision(this.obstacles)) game.gameOver();
-		   
-			// if (this.game.goal) {
-	
-			// 	if (this.isCollision(this.game.goal) && !this.game.goal.alcanzada) {
-			// 		game.goal.alcanzada = true;
-			// 		this.youWin()
-			// 	}
-			// }
+			if (this.frameCounter % 95 === 0) this.lane1.generateObstacle();
+			if (this.frameCounter % 120 === 0) this.lane2.generateObstacle();
+			if (this.frameCounter % 140 === 0) this.lane3.generateObstacle();
+			if (this.frameCounter % 160 === 0) this.lane4.generateObstacle();
+			if (this.frameCounter % 255 === 0) this.generateBottle();
+			if (this.frameCounter === 300) this.generateGoal();
+
 
 			console.log(this.goal)
 			this.drawAll();
 			this.moveAll();
 
-			// this.lane2.handleObstacles (this.player);
 			this.handleObstacles(this.player);
-			if (this.isCollision(this.bottles)) this.gameOver();
-	
-			this.lane1.clearObstacles ();
-			this.lane2.clearObstacles ();
-			this.lane3.clearObstacles ();
-			this.lane4.clearObstacles ();
+			this.handleObstacles(this.npc1);
+			this.handleObstacles(this.npc2);
+			this.handleObstacles(this.npc3);
+
+			// if (this.isCollision(this.bottles)) this.gameOver();
+			// this.lane1.obstacles.forEach((obstaculo) => { console.log(obstaculo.dx) });
+			// console.log(this.background.dx + "el bg")
+			this.lane1.clearObstacles();
+			this.lane2.clearObstacles();
+			this.lane3.clearObstacles();
+			this.lane4.clearObstacles();
 
 			this.clearBottles();
 		}, 1000 / this.fps);
@@ -80,27 +76,100 @@ const Game = {
 
 
 	handleObstacles(player) {
-     
-        if (player instanceof Player) {
-			console.log("soy una isntancia de jugador")
-            if (this.isCollision(this.lane1.obstacles, player)) {
-				// this.gameOver();
-				this.npc1.pos.x += this.speed.x;
+
+		if (player instanceof Player) {
+			// console.log("soy una isntancia de jugador")
+			if (this.isCollision(this.lane1.obstacles, this.player)) {
+				this.background.dx = 7;
+
+				this.lane1.obstacles.forEach((obstaculo) => { obstaculo.dx = 7 });
+				this.lane2.obstacles.forEach((obstaculo) => { obstaculo.dx = 7 });
+				this.lane3.obstacles.forEach((obstaculo) => { obstaculo.dx = 7 });
+				this.lane4.obstacles.forEach((obstaculo) => { obstaculo.dx = 7 });
+				this.bottles.forEach((obstaculo) => { obstaculo.dx = 7 });
+				this.npc1.setVelocityFast();
+				this.npc2.setVelocityFast();
+				this.npc3.setVelocityFast();
+
+				setTimeout(() => {
+
+					this.lane1.obstacles.forEach((obstaculo) => { obstaculo.dx = 8 });
+					this.lane2.obstacles.forEach((obstaculo) => { obstaculo.dx = 8 });
+					this.lane3.obstacles.forEach((obstaculo) => { obstaculo.dx = 8 });
+					this.lane4.obstacles.forEach((obstaculo) => { obstaculo.dx = 8 });
+					this.bottles.forEach((obstaculo) => { obstaculo.dx = 8 });
+					this.npc1.setVelocityDefault();
+					this.npc2.setVelocityDefault();
+					this.npc3.setVelocityDefault();
+					this.background.dx = 8;
+				}, "1000");
+
 			}
-            
-            if (this.goal) {
-                const {goal} = this
-                console.log("ahora chocate")
-                if (this.isCollision(goal , player) && !goal.alcanzada) {
-                    goal.alcanzada = true;
-                    console.log("he colisionado con la meta")
-                    this.youWin()
-                }
-            }
 
-			if (this.isCollision(this.bottles, player)) this.clearBottles();
-        }
+			if (this.goal) {
+				const { goal } = this
+				console.log("ahora chocate")
+				if (this.isCollision(goal, player) && !goal.alcanzada) {
+					goal.alcanzada = true;
+					console.log("he colisionado con la meta")
+					this.youWin()
+				}
+			}
 
+			if (this.isCollision(this.bottles, this.player)) {
+				this.background.dx = 9;
+
+				this.lane1.obstacles.forEach((obstaculo) => { obstaculo.dx = 9 });
+				this.lane2.obstacles.forEach((obstaculo) => { obstaculo.dx = 9 });
+				this.lane3.obstacles.forEach((obstaculo) => { obstaculo.dx = 9 });
+				this.lane4.obstacles.forEach((obstaculo) => { obstaculo.dx = 9 });
+				this.bottles.forEach((obstaculo) => { obstaculo.dx = 9 });
+				this.npc1.setVelocitySlow();
+				this.npc2.setVelocitySlow();
+				this.npc3.setVelocitySlow();
+
+				setTimeout(() => {
+
+					this.lane1.obstacles.forEach((obstaculo) => { obstaculo.dx = 8 });
+					this.lane2.obstacles.forEach((obstaculo) => { obstaculo.dx = 8 });
+					this.lane3.obstacles.forEach((obstaculo) => { obstaculo.dx = 8 });
+					this.lane4.obstacles.forEach((obstaculo) => { obstaculo.dx = 8 });
+					this.bottles.forEach((obstaculo) => { obstaculo.dx = 8 });
+					this.npc1.setVelocityDefault();
+					this.npc2.setVelocityDefault();
+					this.npc3.setVelocityDefault();
+					this.background.dx = 8;
+				}, "1000");
+
+
+			}
+
+
+		} else {
+			if (this.isCollision(this.lane2.obstacles, this.npc1)) {
+				this.npc1.setVelocitySlow();
+
+				setTimeout(() => {
+					player.setVelocityDefault();
+				}, "1000");
+			}
+
+			if (this.isCollision(this.lane3.obstacles, this.npc2)) {
+				this.npc2.setVelocitySlow();
+
+				setTimeout(() => {
+					player.setVelocityDefault();
+				}, "1000");
+			}
+
+			if (this.isCollision(this.lane3.obstacles, this.npc3)) {
+				this.npc3.setVelocitySlow();
+
+				setTimeout(() => {
+					player.setVelocityDefault();
+				}, "1000");
+			}
+		}
 	},
 
 
@@ -184,7 +253,7 @@ const Game = {
 	},
 
 
-	isCollision(elemento , player) {
+	isCollision(elemento, player) {
 
 		if (elemento[0] instanceof Obstacle) {
 			return elemento.some(
@@ -195,25 +264,26 @@ const Game = {
 					player.pos.y < obj.pos.y + obj.height
 			);
 
-			} else if (elemento instanceof Goal) {
-				// this.yaColisionado = true;
-				return player.pos.x + player.width - 25 > elemento.pos.x &&
-					player.pos.x < elemento.pos.x + elemento.width &&
-					player.pos.y + player.height - 10 > elemento.pos.y &&
-					player.pos.y < elemento.pos.y + this.height
+		} else if (elemento instanceof Goal) {
+			// this.yaColisionado = true;
+			return player.pos.x + player.width - 25 > elemento.pos.x &&
+				player.pos.x < elemento.pos.x + elemento.width &&
+				player.pos.y + player.height - 10 > elemento.pos.y &&
+				player.pos.y < elemento.pos.y + this.height
 
-			} else if (elemento[0] instanceof Bottle) {
-			return elemento.some(
-				(obj) =>
-					player.pos.x + player.width - 25 > obj.pos.x &&
-					player.pos.x < obj.pos.x + obj.width &&
-					player.pos.y + player.height - 10 > obj.pos.y &&
-					player.pos.y < obj.pos.y + obj.height
+
+		}
+		else if (elemento[0] instanceof Bottle) {
+			return elemento.some((obj) =>
+				player.pos.x + player.width - 25 > obj.pos.x &&
+				player.pos.x < obj.pos.x + obj.width &&
+				player.pos.y + player.height - 10 > obj.pos.y &&
+				player.pos.y < obj.pos.y + obj.height
 			);
 
 		}
 
-		
+
 
 	},
 
@@ -237,10 +307,20 @@ const Game = {
 	},
 
 	youWin() {
+		deleteObstacles (this.player)
+		deleteObstacles (this.npc1)
+		deleteObstacles (this.npc2)
+		deleteObstacles (this.npc3)
+
+
 		setTimeout(() => {
 			clearInterval(this.animationLoopId);
 			if (confirm('HAS GANADO LA CARRERA ¿VOLVER A EMPEZAR?')) this.init();
 		}, 1000)
 
+	},
+
+	deleteObstacles(player) {
+		player.obstacles = []
 	}
 };

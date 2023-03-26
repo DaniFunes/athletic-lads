@@ -33,7 +33,7 @@ class Npc {
         this.y0 = undefined;
 
 		this.pos = {
-			x: game.width * 0.2,
+			x: game.width * 0.4,
 			y: this.y0,
 		};
 
@@ -97,7 +97,21 @@ class Npc {
 		}
 
 		this.pos.y += this.speed.y;
+        this.pos.x += this.speed.x;
 	}
+
+    setVelocityDefault () {
+        this.speed.x = 0
+    }
+
+    setVelocityFast () {
+        this.speed.x = 1
+    }
+
+    setVelocitySlow () {
+        this.speed.x = -1
+    }
+
 
 
 

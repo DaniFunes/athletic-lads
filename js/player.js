@@ -36,7 +36,7 @@ class Player {
 		this.y0 = game.height * 0.6;
 
 		this.pos = {
-			x: game.width * 0.2,
+			x: game.width * 0.4,
 			y: this.y0,
 		};
 

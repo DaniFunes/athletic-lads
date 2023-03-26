@@ -8,7 +8,7 @@ class Bottle {
  
 		this.pos = {
 			x: game.width,
-			y: game.player.y0 - game.player.height -0,
+			y: game.player.y0 - game.player.height - 36,
 		};
  
 		this.game = game;
@@ -24,5 +24,9 @@ class Bottle {
 
 	move() {
 		this.pos.x -= this.dx;
+
+		// if(this.game.background.dx === 10) {
+		// 	this.dx = 10
+		// }
 	}
 }
