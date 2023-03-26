@@ -1,8 +1,5 @@
 class Npc {
-    constructor(x, y, game, color) {
-		this.game = game;
-
-		// const {widthRun} = this.sprites.run.img.width;
+    constructor(x, y, color, game) {
 
 		this.sprites = {
 	
@@ -25,15 +22,15 @@ class Npc {
 			// }	
 		};
 
-
+        this.game = game;
 		this.currentSprite = this.sprites.run;
 		this.setSprite(this.currentSprite)
 
-		// console.log(document.body.querySelector("img"))
+        this.calidad = getRandomIntInclusive(1,10);
 		this.width = undefined;
 		this.height = undefined;
 
-		this.y0 = game.height * 0.8;
+        this.y0 = undefined;
 
 		this.pos = {
 			x: game.width * 0.2,
@@ -45,7 +42,6 @@ class Npc {
 			y: 0,
 		};
 
-		// this.setControls();
 	}
 
 	setSprite() {
@@ -54,24 +50,7 @@ class Npc {
 		this.height = this.currentSprite.img.height;
 	}
 
-	// setControls() {
-	// 	const { JUMP } = this.game.keys;
-
-	// 	addEventListener('keydown', ({ code }) => {
-	// 		switch (code) {
-	// 			case JUMP:
-	// 				if (this.y0 === this.pos.y) {
-	// 					this.currentSprite = this.sprites.jump;
-	// 					this.speed.y = -9;
-	// 					this.pos.y -= 1;
-	// 				}
-	// 				break;
-
-	// 		}
-	// 	});
-	// }
-
-
+   
 	draw(frameCounter) {
 		const { ctx } = this.game;
 		this.setSprite()

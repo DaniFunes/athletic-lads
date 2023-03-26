@@ -4,13 +4,13 @@ class Goal {
         this.imgGoal = new Image();
         this.imgGoal.src = 'assets/goal.png';
 
-        this.width = 39 * 0.4;
-        this.height = 449 * 0.4;
+        this.width = 39 * 0.5;
+        this.height = 449 * 0.5;
         this.alcanzada = false;
         
         this.pos = {
             x: game.width,
-            y: 280,
+            y: 400,
         };
 
         this.game = game;

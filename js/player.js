@@ -71,8 +71,6 @@ class Player {
 		});
 	}
 
-
-
 	draw(frameCounter) {
 		const { ctx } = this.game;
 		this.setSprite()
@@ -95,7 +93,6 @@ class Player {
 			this.height,
 
 		);
-		// console.log(this.player.width)
 	}
 
 

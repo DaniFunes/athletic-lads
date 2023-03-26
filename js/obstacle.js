@@ -1,33 +1,35 @@
 class Obstacle {
-	constructor(game) {
+	constructor(game, lane) {
+		this.game = game;
+		this.lane = lane;
 		this.imgObs = new Image();
 		this.imgObs.src = 'assets/valla.png';
-		
+
 		this.width = 27 * 0.4;
-		this.height = 316 * 0.15; 
+		this.height = 316 * 0.15;
 		this.colisionada = false;
 
 		this.pos = {
 			x: game.width,
-			y: game.player.y0 + game.player.height - this.height,
+			y: lane.y0,
 		};
- 
-		this.game = game;
 
-		this.dx = 8; 
+		this.dx = 8;
 	}
- 
+
+
 	draw() {
 		const { ctx } = this.game;
-		
-		ctx.drawImage (this.imgObs, this.pos.x, this.pos.y, this.width, this.height)
-		}
+
+		ctx.drawImage (this.imgObs, this.pos.x, this.pos.y, this.width, this.height);
+		// console.log("pintando ostaculo")
+	}
 
 	move() {
 		this.pos.x -= this.dx;
 	}
 }
 
-	
-	
+
+
 
