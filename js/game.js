@@ -5,6 +5,7 @@ const Game = {
 	fps: 60,
 	keys: {
 		JUMP: 'Space',
+
 	},
 
 	init() {
@@ -23,6 +24,7 @@ const Game = {
 		console.log('Estableciendo valores iniciales para el juego');
 
 		this.player = new Player(0, 0, this);
+		this.npc1 = new Npc(0, 0, this, 'red')
 		this.background = new Background(this);
 
 		this.obstacles = [];
@@ -36,11 +38,7 @@ const Game = {
 		this.animationLoopId = setInterval(() => {
 			this.clear();
 
-			// console.log(this.currentFrame)
-			// console.log(this.frameCounter)
 			this.frameCounter++;
-			// console.log(this.frameCounter)
-			// console.log(this.currentFrame)
 
 			if (this.frameCounter % 90 === 0) this.generateObstacle();
 			if (this.frameCounter % 155 === 0) this.generateBottle();
@@ -49,34 +47,11 @@ const Game = {
 			this.drawAll();
 			this.moveAll();
 
-
 			if (this.isCollision(this.obstacles)) this.gameOver();
 			if (this.isCollision(this.bottles)) this.gameOver();
-
-			// console.log(this.currentFrame)
-
-
-			// if (this.goal && !yaColisionado) {
-			// 	estaColisionando = this.isCollision(this.goal)
-			// 	yaColisionado = true;
-			// }
-			// if (this.goal && estaColisionando) {
-			// 	estaColisionando = false
-			// 	// this.clearGoal();
-			// 	this.youWin();
-
-			// }
-			// const { yaColisionado } = this;
-			// console.log(yaColisionado)
-
-			// let estaColisionando = this.isCollision(this.goal)
-			// console.log(estaColisionando)
-			
-
 			if (this.goal) {
-				// console.log(this.frameCounter)
-				// console.log(estaColisionando)
-				if (this.isCollision(this.goal) && !this.goal.alcanzada) {				
+
+				if (this.isCollision(this.goal) && !this.goal.alcanzada) {
 					this.goal.alcanzada = true;
 					this.youWin()
 				}
@@ -104,6 +79,7 @@ const Game = {
 
 
 		this.player.draw(this.frameCounter);
+		this.npc1.draw(this.frameCounter);
 
 	},
 
@@ -121,6 +97,7 @@ const Game = {
 		if (this.goal) this.goal.move();
 
 		this.player.move(this.frameCounter);
+		this.npc1.move(this.frameCounter);
 
 	},
 
@@ -144,8 +121,6 @@ const Game = {
 
 
 	isCollision(elemento) {
-		// console.log(elemento)
-
 
 		if (elemento[0] instanceof Obstacle) {
 			return elemento.some(
@@ -166,7 +141,7 @@ const Game = {
 			);
 
 		} else if (elemento instanceof Goal) {
-			this.yaColisionado = true;
+			// this.yaColisionado = true;
 			return this.player.pos.x + this.player.width - 25 > elemento.pos.x &&
 				this.player.pos.x < elemento.pos.x + elemento.width &&
 				this.player.pos.y + this.player.height - 10 > elemento.pos.y &&

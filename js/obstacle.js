@@ -5,7 +5,8 @@ class Obstacle {
 		
 		this.width = 27 * 0.4;
 		this.height = 316 * 0.15; 
- 
+		this.colisionada = false;
+
 		this.pos = {
 			x: game.width,
 			y: game.player.y0 + game.player.height - this.height,

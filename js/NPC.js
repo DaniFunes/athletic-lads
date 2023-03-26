@@ -1,5 +1,5 @@
-class Player {
-	constructor(x, y, game) {
+class Npc {
+    constructor(x, y, game, color) {
 		this.game = game;
 
 		// const {widthRun} = this.sprites.run.img.width;
@@ -7,13 +7,13 @@ class Player {
 		this.sprites = {
 	
 			run: {
-				img: createImage('assets/blue-run.png'),
+				img: createImage(`assets/${color}-run.png`),
 				frames: 12,
 				frameIndex: 0,
 
 			},
 			jump: {
-				img: createImage('assets/blue-jump.png'),
+				img: createImage(`assets/${color}-jump.png`),
 				frames: 12,
 				frameIndex: 0,
 
@@ -33,7 +33,7 @@ class Player {
 		this.width = undefined;
 		this.height = undefined;
 
-		this.y0 = game.height * 0.6;
+		this.y0 = game.height * 0.8;
 
 		this.pos = {
 			x: game.width * 0.2,
@@ -45,7 +45,7 @@ class Player {
 			y: 0,
 		};
 
-		this.setControls();
+		// this.setControls();
 	}
 
 	setSprite() {
@@ -54,23 +54,22 @@ class Player {
 		this.height = this.currentSprite.img.height;
 	}
 
-	setControls() {
-		const { JUMP } = this.game.keys;
+	// setControls() {
+	// 	const { JUMP } = this.game.keys;
 
-		addEventListener('keydown', ({ code }) => {
-			switch (code) {
-				case JUMP:
-					if (this.y0 === this.pos.y) {
-						this.currentSprite = this.sprites.jump;
-						this.speed.y = -9;
-						this.pos.y -= 1;
-					}
-					break;
+	// 	addEventListener('keydown', ({ code }) => {
+	// 		switch (code) {
+	// 			case JUMP:
+	// 				if (this.y0 === this.pos.y) {
+	// 					this.currentSprite = this.sprites.jump;
+	// 					this.speed.y = -9;
+	// 					this.pos.y -= 1;
+	// 				}
+	// 				break;
 
-			}
-		});
-	}
-
+	// 		}
+	// 	});
+	// }
 
 
 	draw(frameCounter) {
@@ -95,7 +94,6 @@ class Player {
 			this.height,
 
 		);
-		// console.log(this.player.width)
 	}
 
 
@@ -121,4 +119,7 @@ class Player {
 
 		this.pos.y += this.speed.y;
 	}
+
+
+
 }
