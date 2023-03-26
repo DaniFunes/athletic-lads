@@ -16,46 +16,35 @@ class Lane {
         this.player.y0 = this.y0;
     }
 
-    
-        // } else {
-
-        // }
-
-      
-
-
-
-    // isCollision(elemento) {
-
-    //     if (elemento[0] instanceof Obstacle) {
-    //         return elemento.some(
-    //             (obj) =>
-    //                 this.player.pos.x + this.player.width - 25 > obj.pos.x &&
-    //                 this.player.pos.x < obj.pos.x + obj.width &&
-    //                 this.player.pos.y + this.player.height - 10 > obj.pos.y &&
-    //                 this.player.pos.y < obj.pos.y + obj.height
-    //         )
-
-    //     } else if (elemento instanceof Goal) {
-    //         return this.player.pos.x + this.player.width - 25 > elemento.pos.x &&
-    //             this.player.pos.x < elemento.pos.x + elemento.width &&
-    //             this.player.pos.y + this.player.height - 10 > elemento.pos.y &&
-    //             this.player.pos.y < elemento.pos.y + this.height
-    //     }
-
-    // }
 
     generateObstacle() {
-		this.obstacles.push(new Obstacle(this.game, this));
-        // console.log("generando ostaculo")
-        // console.log(this.obstacles)
-	}
+        this.obstacles.push(new Obstacle(this.game, this));
 
-	clearObstacles() {
-		this.obstacles = this.obstacles.filter(
-			(obstacle) => obstacle.pos.x + obstacle.width > 0
-		);
-	}
+    }
+
+    clearObstacles() {
+        this.obstacles = this.obstacles.filter(
+            (obstacle) => obstacle.pos.x + obstacle.width > 0
+        );
+    }
+
+    // checkJump() {
+    //     this.obstacles.forEach((obstacle) => {
+    //         if (this.player.pos.x === this.obstacles.pos.x - 25) {
+    //             if (this.player.calidad >= 5 && this.player.y0 === this.player.pos.y) {
+    //                 this.player.currentSprite = this.player.sprites.jump;
+    //                 this.speed.y = -9;
+    //                 this.pos.y -= 1;
+
+    //             }
+    //         }
+
+    //     }
+
+    //     )
+
+
+    // }
 
 
 }

@@ -45,30 +45,45 @@ const Game = {
 
 			this.frameCounter++;
 
+			this.npc1.setRandomQuality();
+			this.npc2.setRandomQuality();
+			this.npc3.setRandomQuality();
+
+			// this.lane2.checkJump ();
+			// console.log(this.lane2.obstacles)
+			if (this.lane3.length) console.log(this.lane3.obstacles.pos.x)
+			
+
+
 			if (this.frameCounter % 95 === 0) this.lane1.generateObstacle();
 			if (this.frameCounter % 120 === 0) this.lane2.generateObstacle();
 			if (this.frameCounter % 140 === 0) this.lane3.generateObstacle();
 			if (this.frameCounter % 160 === 0) this.lane4.generateObstacle();
 			if (this.frameCounter % 255 === 0) this.generateBottle();
-			if (this.frameCounter === 300) this.generateGoal();
+			if (this.frameCounter === 3600) this.generateGoal();
 
-
-			console.log(this.goal)
 			this.drawAll();
 			this.moveAll();
 
+			this.npc1.checkJump(this.lane2);
+			// console.log(this.npc1.calidad)
+
+
+			
 			this.handleObstacles(this.player);
 			this.handleObstacles(this.npc1);
 			this.handleObstacles(this.npc2);
 			this.handleObstacles(this.npc3);
 
-			// if (this.isCollision(this.bottles)) this.gameOver();
-			// this.lane1.obstacles.forEach((obstaculo) => { console.log(obstaculo.dx) });
-			// console.log(this.background.dx + "el bg")
 			this.lane1.clearObstacles();
 			this.lane2.clearObstacles();
 			this.lane3.clearObstacles();
 			this.lane4.clearObstacles();
+
+			this.deleteObstacles(this.lane1);
+			this.deleteObstacles(this.lane2);
+			this.deleteObstacles(this.lane3);
+			this.deleteObstacles(this.lane4);
 
 			this.clearBottles();
 		}, 1000 / this.fps);
@@ -108,17 +123,16 @@ const Game = {
 
 			if (this.goal) {
 				const { goal } = this
-				console.log("ahora chocate")
+				// console.log("ahora chocate")
 				if (this.isCollision(goal, player) && !goal.alcanzada) {
 					goal.alcanzada = true;
-					console.log("he colisionado con la meta")
+					// console.log("he colisionado con la meta")
 					this.youWin()
 				}
 			}
 
-			if (this.isCollision(this.bottles, this.player)) {
+			if (this.isCollision(this.bottles, this.player) && !this.bottles.colisionada) {
 				this.background.dx = 9;
-
 				this.lane1.obstacles.forEach((obstaculo) => { obstaculo.dx = 9 });
 				this.lane2.obstacles.forEach((obstaculo) => { obstaculo.dx = 9 });
 				this.lane3.obstacles.forEach((obstaculo) => { obstaculo.dx = 9 });
@@ -146,7 +160,9 @@ const Game = {
 
 
 		} else {
-			if (this.isCollision(this.lane2.obstacles, this.npc1)) {
+			if (this.isCollision(this.lane2.obstacles, this.npc1) && !this.lane2.obstacles.colisionada) {
+				this.lane2.obstacles.colisionada = true;
+				// console.log("he colisionado en el carril 2")
 				this.npc1.setVelocitySlow();
 
 				setTimeout(() => {
@@ -154,7 +170,10 @@ const Game = {
 				}, "1000");
 			}
 
-			if (this.isCollision(this.lane3.obstacles, this.npc2)) {
+			if (this.isCollision(this.lane3.obstacles, this.npc2) && !this.lane3.obstacles.colisionada) {
+				this.lane3.obstacles.colisionada = true;
+				console.log("he colisionado en el carril 3")
+
 				this.npc2.setVelocitySlow();
 
 				setTimeout(() => {
@@ -162,7 +181,8 @@ const Game = {
 				}, "1000");
 			}
 
-			if (this.isCollision(this.lane3.obstacles, this.npc3)) {
+			if (this.isCollision(this.lane4.obstacles, this.npc3) && !this.lane4.obstacles.colisionada) {
+				// console.log("he  colisionado en el carril 4")
 				this.npc3.setVelocitySlow();
 
 				setTimeout(() => {
@@ -283,8 +303,6 @@ const Game = {
 
 		}
 
-
-
 	},
 
 
@@ -307,20 +325,26 @@ const Game = {
 	},
 
 	youWin() {
-		deleteObstacles (this.player)
-		deleteObstacles (this.npc1)
-		deleteObstacles (this.npc2)
-		deleteObstacles (this.npc3)
-
-
+		console.log("has ganado")
 		setTimeout(() => {
 			clearInterval(this.animationLoopId);
-			if (confirm('HAS GANADO LA CARRERA ¿VOLVER A EMPEZAR?')) this.init();
+			if (confirm('HAS GANADO LA CARRERA ¿VOLVER A EMPEZAR?')) {
+				this.goal.alcanzada = false;
+				this.init()};
 		}, 1000)
 
 	},
 
-	deleteObstacles(player) {
-		player.obstacles = []
+	deleteObstacles(lane) {
+		if (this.goal) {
+
+			if (this.goal.alcanzada) {
+
+				lane.obstacles = lane.obstacles.filter(
+					(obstacle) => obstacle.pos.x < this.goal.pos.x
+				)
+			}
+		}
 	}
-};
+
+}

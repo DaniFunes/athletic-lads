@@ -13,7 +13,6 @@ class Obstacle {
 			x: game.width,
 			y: lane.y0,
 		};
-
 		this.dx = 8;
 	}
 
@@ -28,9 +27,6 @@ class Obstacle {
 	move() {
 		this.pos.x -= this.dx;
 
-		// if(this.game.background.dx === 10) {
-		// 	this.dx = 10
-		// }
 	}
 }
 

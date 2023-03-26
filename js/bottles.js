@@ -12,7 +12,7 @@ class Bottle {
 		};
  
 		this.game = game;
-
+		this.colisionada = false;
 		this.dx = 8; 
 	}
  
