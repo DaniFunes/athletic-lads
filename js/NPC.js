@@ -42,6 +42,9 @@ class Npc {
             y: 0,
         };
 
+        this.jumping  = false
+        this.state = 'normal'
+
     }
 
     setSprite() {
@@ -68,7 +71,7 @@ class Npc {
             this.currentSprite.img.width / this.currentSprite.frames,
             this.currentSprite.img.height,
             this.pos.x,
-            this.pos.y,
+            this.pos.y - this.height,
             this.width,
             this.height,
 
@@ -87,6 +90,10 @@ class Npc {
     }
 
     move() {
+        if(this.pos.x < 0) {
+            this.state = "normal"
+        }
+
         const gravity = 0.8;
 
         if (this.pos.y < this.y0) {
@@ -95,44 +102,69 @@ class Npc {
             this.speed.y = 0;
             this.pos.y = this.y0;
         }
+        
 
         this.pos.y += this.speed.y;
         this.pos.x += this.speed.x;
     }
 
-    checkJump(lane) {
-        lane.obstacles.forEach((obstacle) => {
-            console.log(this.pos.x)
-            console.log(obstacle.pos.x)
-            if (this.pos.x <= obstacle.pos.x -25) {
-                console.log("es hora de saltar")
-                if (this.calidad >= 5 && this.pos.y === this.y0) {
-                    this.currentSprite = this.sprites.jump;
-                    this.speed.y = -9;
-                    this.pos.y -= 1;
-                }
-            }
+    // setVelocitySlow() {
 
-        }
+    //     if (this.speed.x >= 0) {
+      
+    //         console.log("LA VIDA PASA")
+    //         this.speed.x = -1
+    //         setTimeout(() => {
+    //             this.speed.x = 7 - this.game.velocity
+    //         }, 1500)
+    //     }
 
-        )
-    }
+       
+    // }
 
-    setVelocityDefault() {
-        this.speed.x = 0
-    }
-
-    setVelocityFast() {
-        this.speed.x = 1
-    }
-
-    setVelocitySlow() {
-        this.speed.x = -1
-    }
+    getHeight() {
+		return this.currentSprite.img.height
+	}
 
     setRandomQuality() {
+
+        // console.log("CALCULANDO")
         this.calidad = getRandomIntInclusive(1, 10);
+        // console.log(this.calidad)
     }
 
+    boost(){
+		this.state = 'boosted'
+	}
+
+	stun(){
+		
+        if (this.state !== 'stuned') {
+			this.state = 'stuned'
+			
+		
+			this.speed.x += this.game.stunVelocity
+		
+			setTimeout(() => {
+				this.speed.x = 0
+				this.state = 'normal'
+
+			}, "1000");
+		}	
+	}
+
+    rearrange(velocity){
+
+        if(this.state === 'normal') {
+            this.state = 'rearrenged'
+            this.speed.x += -velocity
+        }
+        
+	}
+
+    setNormalVelocity() {
+        this.state = 'normal'
+        this.speed.x = 0
+    }
 
 }

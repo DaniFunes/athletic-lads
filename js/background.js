@@ -9,7 +9,6 @@ class Background {
 		this.x = 0;
 		this.y = 0;
 
-		this.dx = 8;
 	}
 
 	draw() {
@@ -31,10 +30,10 @@ class Background {
 	}
 
 	move() {
-		if (this.x - this.dx <= -this.game.width) {
+		if (this.x - this.game.velocity <= -this.game.width) {
 			this.x = 0;
 		}
 
-		this.x -= this.dx;
+		this.x -= this.game.velocity;
 	}
 }

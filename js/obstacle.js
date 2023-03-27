@@ -13,19 +13,18 @@ class Obstacle {
 			x: game.width,
 			y: lane.y0,
 		};
-		this.dx = 8;
+	
 	}
 
 
 	draw() {
 		const { ctx } = this.game;
 
-		ctx.drawImage (this.imgObs, this.pos.x, this.pos.y, this.width, this.height);
-		// console.log("pintando ostaculo")
+		ctx.drawImage (this.imgObs, this.pos.x, this.pos.y - this.height, this.width, this.height);
 	}
 
 	move() {
-		this.pos.x -= this.dx;
+		this.pos.x -= this.game.velocity;
 
 	}
 }

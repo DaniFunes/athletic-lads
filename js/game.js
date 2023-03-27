@@ -7,10 +7,13 @@ const Game = {
 		JUMP: 'Space',
 
 	},
-
+	velocity: 8,
+	normalVelocity: 8,
+	stunVelocity: -2,
+	boostVelocity: 2,
 	init() {
 		const canvas = document.querySelector('canvas');
-
+	
 		canvas.width = this.width;
 		canvas.height = this.height;
 
@@ -26,14 +29,25 @@ const Game = {
 		this.player = new Player(0, 0, this);
 		this.background = new Background(this);
 		this.bottles = [];
-		this.npc1 = new Npc(0, 0, "red", this)
-		this.npc2 = new Npc(0, 0, "yellow", this)
-		this.npc3 = new Npc(0, 0, "green", this)
-		this.lane1 = new Lane(0, 0.62, this, this.player)
-		this.lane2 = new Lane(0, 0.68, this, this.npc1)
-		this.lane3 = new Lane(0, 0.74, this, this.npc2)
-		this.lane4 = new Lane(0, 0.8, this, this.npc3)
 
+		this.npcs = [
+			new Npc(0, 0, "red", this),
+			new Npc(0, 0, "yellow", this),
+			new Npc(0, 0, "green", this),
+		]
+		this.lanes = [
+			new Lane(0.66, this, this.player),
+			new Lane(0.725, this, this.npcs[0]),
+			new Lane(0.775, this, this.npcs[1]),
+			new Lane(0.84, this, this.npcs[2]),
+		]
+
+
+
+		// carril 1 = 0.63 .....0.695
+		// carril 2 = 0.705 .....0.745
+		// carril 3 = 0.755 .....0.803
+		// carril 4 = 0.81 .... 0.865
 
 	},
 
@@ -45,150 +59,95 @@ const Game = {
 
 			this.frameCounter++;
 
-			this.npc1.setRandomQuality();
-			this.npc2.setRandomQuality();
-			this.npc3.setRandomQuality();
+			if (this.frameCounter % 95 === 0) {
+				this.lanes.forEach((lane, key) => {
+					lane.generateObstacle()
 
-			// this.lane2.checkJump ();
-			// console.log(this.lane2.obstacles)
-			if (this.lane3.length) console.log(this.lane3.obstacles.pos.x)
-			
-
-
-			if (this.frameCounter % 95 === 0) this.lane1.generateObstacle();
-			if (this.frameCounter % 120 === 0) this.lane2.generateObstacle();
-			if (this.frameCounter % 140 === 0) this.lane3.generateObstacle();
-			if (this.frameCounter % 160 === 0) this.lane4.generateObstacle();
-			if (this.frameCounter % 255 === 0) this.generateBottle();
-			if (this.frameCounter === 3600) this.generateGoal();
+				
+						lane.obstacles[lane.obstacles.length -1].pos.x -= 20 * key
+				
+					
+					
+				})
+			}
+			// if (this.frameCounter % 95 === 0)  this.lane1.generateObstacle();
+			// if (this.frameCounter % 120 === 0) this.lane2.generateObstacle();
+			// if (this.frameCounter % 140 === 0) this.lane3.generateObstacle();
+			// if (this.frameCounter % 160 === 0) this.lane4.generateObstacle();
+			if (this.frameCounter % 255 === 0) this.generateBottle()
+			if (this.frameCounter === 1600) this.generateGoal();
 
 			this.drawAll();
 			this.moveAll();
 
-			this.npc1.checkJump(this.lane2);
-			// console.log(this.npc1.calidad)
 
-
-			
-			this.handleObstacles(this.player);
-			this.handleObstacles(this.npc1);
-			this.handleObstacles(this.npc2);
-			this.handleObstacles(this.npc3);
-
-			this.lane1.clearObstacles();
-			this.lane2.clearObstacles();
-			this.lane3.clearObstacles();
-			this.lane4.clearObstacles();
-
-			this.deleteObstacles(this.lane1);
-			this.deleteObstacles(this.lane2);
-			this.deleteObstacles(this.lane3);
-			this.deleteObstacles(this.lane4);
+			this.lanes.forEach(lane => {
+				lane.checkJump()
+				this.handleObstacles(lane);
+				lane.clearObstacles();
+				this.deleteObstacles(lane);
+			})
 
 			this.clearBottles();
 		}, 1000 / this.fps);
 	},
 
 
-	handleObstacles(player) {
+	handleObstacles(lane) {
 
-		if (player instanceof Player) {
-			// console.log("soy una isntancia de jugador")
-			if (this.isCollision(this.lane1.obstacles, this.player)) {
-				this.background.dx = 7;
 
-				this.lane1.obstacles.forEach((obstaculo) => { obstaculo.dx = 7 });
-				this.lane2.obstacles.forEach((obstaculo) => { obstaculo.dx = 7 });
-				this.lane3.obstacles.forEach((obstaculo) => { obstaculo.dx = 7 });
-				this.lane4.obstacles.forEach((obstaculo) => { obstaculo.dx = 7 });
-				this.bottles.forEach((obstaculo) => { obstaculo.dx = 7 });
-				this.npc1.setVelocityFast();
-				this.npc2.setVelocityFast();
-				this.npc3.setVelocityFast();
+		if (lane.player instanceof Player) {
+			if (this.isCollision(lane.obstacles, lane.player)) {
+				console.log("COLISIONA")
+				lane.player.stun()
 
-				setTimeout(() => {
-
-					this.lane1.obstacles.forEach((obstaculo) => { obstaculo.dx = 8 });
-					this.lane2.obstacles.forEach((obstaculo) => { obstaculo.dx = 8 });
-					this.lane3.obstacles.forEach((obstaculo) => { obstaculo.dx = 8 });
-					this.lane4.obstacles.forEach((obstaculo) => { obstaculo.dx = 8 });
-					this.bottles.forEach((obstaculo) => { obstaculo.dx = 8 });
-					this.npc1.setVelocityDefault();
-					this.npc2.setVelocityDefault();
-					this.npc3.setVelocityDefault();
-					this.background.dx = 8;
-				}, "1000");
-
+				this.npcs.forEach(npc => {
+					npc.rearrange(this.stunVelocity)
+				})
 			}
 
-			if (this.goal) {
-				const { goal } = this
-				// console.log("ahora chocate")
-				if (this.isCollision(goal, player) && !goal.alcanzada) {
-					goal.alcanzada = true;
-					// console.log("he colisionado con la meta")
-					this.youWin()
-				}
-			}
+			// if (this.goal) {
+			// 	const { goal } = this
+			// 	// console.log("ahora chocate")
+			// 	if (this.isCollision(goal, player) && !goal.alcanzada) {
+			// 		goal.alcanzada = true;
+			// 		// console.log("he colisionado con la meta")
+			// 		this.youWin()
+			// 	}
+			// }
 
 			if (this.isCollision(this.bottles, this.player) && !this.bottles.colisionada) {
-				this.background.dx = 9;
-				this.lane1.obstacles.forEach((obstaculo) => { obstaculo.dx = 9 });
-				this.lane2.obstacles.forEach((obstaculo) => { obstaculo.dx = 9 });
-				this.lane3.obstacles.forEach((obstaculo) => { obstaculo.dx = 9 });
-				this.lane4.obstacles.forEach((obstaculo) => { obstaculo.dx = 9 });
-				this.bottles.forEach((obstaculo) => { obstaculo.dx = 9 });
-				this.npc1.setVelocitySlow();
-				this.npc2.setVelocitySlow();
-				this.npc3.setVelocitySlow();
 
-				setTimeout(() => {
+				console.log("BEBE PERRO")
+				lane.player.boost()
 
-					this.lane1.obstacles.forEach((obstaculo) => { obstaculo.dx = 8 });
-					this.lane2.obstacles.forEach((obstaculo) => { obstaculo.dx = 8 });
-					this.lane3.obstacles.forEach((obstaculo) => { obstaculo.dx = 8 });
-					this.lane4.obstacles.forEach((obstaculo) => { obstaculo.dx = 8 });
-					this.bottles.forEach((obstaculo) => { obstaculo.dx = 8 });
-					this.npc1.setVelocityDefault();
-					this.npc2.setVelocityDefault();
-					this.npc3.setVelocityDefault();
-					this.background.dx = 8;
-				}, "1000");
-
-
+				this.npcs.forEach(npc => {
+					npc.rearrange(this.boostVelocity)
+				})
 			}
 
 
 		} else {
-			if (this.isCollision(this.lane2.obstacles, this.npc1) && !this.lane2.obstacles.colisionada) {
-				this.lane2.obstacles.colisionada = true;
-				// console.log("he colisionado en el carril 2")
-				this.npc1.setVelocitySlow();
 
-				setTimeout(() => {
-					player.setVelocityDefault();
-				}, "1000");
+			if (this.isCollision(lane.obstacles, lane.player) && !lane.obstacles.colisionada) {
+				lane.player.stun()
+
 			}
 
-			if (this.isCollision(this.lane3.obstacles, this.npc2) && !this.lane3.obstacles.colisionada) {
-				this.lane3.obstacles.colisionada = true;
-				console.log("he colisionado en el carril 3")
 
-				this.npc2.setVelocitySlow();
-
-				setTimeout(() => {
-					player.setVelocityDefault();
-				}, "1000");
-			}
-
-			if (this.isCollision(this.lane4.obstacles, this.npc3) && !this.lane4.obstacles.colisionada) {
-				// console.log("he  colisionado en el carril 4")
-				this.npc3.setVelocitySlow();
-
-				setTimeout(() => {
-					player.setVelocityDefault();
-				}, "1000");
-			}
+			// if (this.goal) {
+			// 	const { goal } = this
+			// 	if (this.isCollision(goal, this.npc1) && !goal.alcanzada) {
+			// 		goal.alcanzada = true;
+			// 		this.youLose()
+			// 	} else if (this.isCollision(goal, this.npc2) && !goal.alcanzada) {
+			// 		goal.alcanzada = true;
+			// 		this.youLose()
+			// 	} else if (this.isCollision(goal, this.npc3) && !goal.alcanzada) {
+			// 		goal.alcanzada = true;
+			// 		this.youLose()
+			// 	}
+			// }
 		}
 	},
 
@@ -198,20 +157,10 @@ const Game = {
 
 		this.background.draw();
 
-		this.lane1.obstacles.forEach((obstacle) => {
-			obstacle.draw();
-		});
-
-		this.lane2.obstacles.forEach((obstacle) => {
-			obstacle.draw();
-		});
-
-		this.lane3.obstacles.forEach((obstacle) => {
-			obstacle.draw();
-		});
-
-		this.lane4.obstacles.forEach((obstacle) => {
-			obstacle.draw();
+		this.lanes.forEach(lane => {
+			lane.obstacles.forEach((obstacle) => {
+				obstacle.draw();
+			})
 		});
 
 		this.bottles.forEach((bottle) => {
@@ -220,31 +169,19 @@ const Game = {
 
 		if (this.goal) this.goal.draw();
 
-
 		this.player.draw(this.frameCounter);
-		this.npc1.draw(this.frameCounter);
-		this.npc2.draw(this.frameCounter);
-		this.npc3.draw(this.frameCounter);
+		this.npcs.forEach(npc => {
+			npc.draw(this.frameCounter);
+		})
 
 	},
 
 	moveAll() {
 		this.background.move();
-
-		this.lane1.obstacles.forEach((obstacle) => {
-			obstacle.move();
-		});
-
-		this.lane2.obstacles.forEach((obstacle) => {
-			obstacle.move();
-		});
-
-		this.lane3.obstacles.forEach((obstacle) => {
-			obstacle.move();
-		});
-
-		this.lane4.obstacles.forEach((obstacle) => {
-			obstacle.move();
+		this.lanes.forEach(lane => {
+			lane.obstacles.forEach((obstacle) => {
+				obstacle.move();
+			})
 		});
 
 		this.bottles.forEach((bottle) => {
@@ -254,9 +191,9 @@ const Game = {
 		if (this.goal) this.goal.move();
 
 		this.player.move(this.frameCounter);
-		this.npc1.move(this.frameCounter);
-		this.npc2.move(this.frameCounter);
-		this.npc3.move(this.frameCounter);
+		this.npcs.forEach(npc => {
+			npc.move(this.frameCounter);
+		})
 
 	},
 
@@ -280,12 +217,11 @@ const Game = {
 				(obj) =>
 					player.pos.x + player.width - 25 > obj.pos.x &&
 					player.pos.x < obj.pos.x + obj.width &&
-					player.pos.y + player.height - 10 > obj.pos.y &&
+					player.pos.y + player.height > obj.pos.y &&
 					player.pos.y < obj.pos.y + obj.height
 			);
 
 		} else if (elemento instanceof Goal) {
-			// this.yaColisionado = true;
 			return player.pos.x + player.width - 25 > elemento.pos.x &&
 				player.pos.x < elemento.pos.x + elemento.width &&
 				player.pos.y + player.height - 10 > elemento.pos.y &&
@@ -330,7 +266,20 @@ const Game = {
 			clearInterval(this.animationLoopId);
 			if (confirm('HAS GANADO LA CARRERA ¿VOLVER A EMPEZAR?')) {
 				this.goal.alcanzada = false;
-				this.init()};
+				this.init()
+			};
+		}, 1000)
+
+	},
+
+	youLose() {
+		console.log("has perdido")
+		setTimeout(() => {
+			clearInterval(this.animationLoopId);
+			if (confirm('HAS PERDIDO LA CARRERA ¿VOLVER A EMPEZAR?')) {
+				this.goal.alcanzada = false;
+				this.init()
+			};
 		}, 1000)
 
 	},

@@ -29,15 +29,14 @@ class Player {
 		this.currentSprite = this.sprites.run;
 		this.setSprite(this.currentSprite)
 
-		// console.log(document.body.querySelector("img"))
 		this.width = undefined;
 		this.height = undefined;
 
-		this.y0 = game.height * 0.6;
+        // this.y0;
 
 		this.pos = {
 			x: game.width * 0.4,
-			y: this.y0,
+			// y: this.y0,
 		};
 
 		this.speed = {
@@ -45,7 +44,13 @@ class Player {
 			y: 0,
 		};
 
+		this.state = 'normal'
+
 		this.setControls();
+	}
+
+	getHeight() {
+		return this.currentSprite.img.height
 	}
 
 	setSprite() {
@@ -88,7 +93,7 @@ class Player {
 			this.currentSprite.img.width / this.currentSprite.frames,
 			this.currentSprite.img.height,
 			this.pos.x,
-			this.pos.y,
+			this.pos.y - this.height,
 			this.width,
 			this.height,
 
@@ -107,7 +112,7 @@ class Player {
 	}
 
 	move() {
-		const gravity = 0.8;
+		const gravity = 0.3;
 
 		if (this.pos.y < this.y0) {
 			this.speed.y += gravity;
@@ -117,5 +122,46 @@ class Player {
 		}
 
 		this.pos.y += this.speed.y;
+
 	}
+
+	boost(){
+		if (this.state !== 'boosted') {
+			this.state = 'boosted'
+			
+		
+			this.game.velocity += this.game.boostVelocity
+		
+			setTimeout(() => {
+				this.game.velocity = this.game.normalVelocity
+				this.state = 'normal'
+
+				this.game.npcs.forEach(npc => {
+					npc.setNormalVelocity()
+				})
+			}, "1000");
+		}	
+	}
+
+	stun(){
+	
+
+		if (this.state !== 'stuned') {
+			this.state = 'stuned'
+			
+		
+			this.game.velocity += this.game.stunVelocity
+		
+			setTimeout(() => {
+				this.game.velocity = this.game.normalVelocity
+				this.state = 'normal'
+
+				this.game.npcs.forEach(npc => {
+					npc.setNormalVelocity()
+				})
+			}, "1000");
+		}	
+	}
+
+
 }

@@ -10,7 +10,7 @@ class Goal {
         
         this.pos = {
             x: game.width,
-            y: 400,
+            y: 250,
         };
 
         this.game = game;
