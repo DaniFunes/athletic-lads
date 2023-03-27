@@ -2,8 +2,6 @@ class Player {
 	constructor(x, y, game) {
 		this.game = game;
 
-		// const {widthRun} = this.sprites.run.img.width;
-
 		this.sprites = {
 	
 			run: {
@@ -18,11 +16,7 @@ class Player {
 				frameIndex: 0,
 
 			},
-			// fall: {
-			// 	img: createImage('assets/blue-slide.png'),
-			// 	frames: 12,
-			// 	frameIndex: 0,
-			// }	
+	
 		};
 
 
@@ -32,11 +26,11 @@ class Player {
 		this.width = undefined;
 		this.height = undefined;
 
-        // this.y0;
+
 
 		this.pos = {
 			x: game.width * 0.4,
-			// y: this.y0,
+
 		};
 
 		this.speed = {
@@ -112,7 +106,7 @@ class Player {
 	}
 
 	move() {
-		const gravity = 0.3;
+		const gravity = 0.75;
 
 		if (this.pos.y < this.y0) {
 			this.speed.y += gravity;

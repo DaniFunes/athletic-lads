@@ -24,23 +24,8 @@ class Bottle {
 
 	move() {
 		this.pos.x -= this.game.velocity;
-		// setInterval(() => {
-		// 	this.moveGrades();
-		// 	console.log("cambio los grados de la bottela")
-		// }, 100)
-		
-		
+
 	}
 
-	moveGrades() {
-		this.imgBot.style.transform = 'rotate(180deg)'
-	}
-
-	// radiansToDegrees(radians) {
-
-	// 	const pi = Math.PI;
-	// 	return radians * (180 / pi);
-
-	// }
 
 }

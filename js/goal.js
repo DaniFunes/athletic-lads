@@ -10,7 +10,7 @@ class Goal {
         
         this.pos = {
             x: game.width,
-            y: 250,
+            y: game.height * 0.62,
         };
 
         this.game = game;
@@ -28,7 +28,7 @@ class Goal {
 
     move() {
 
-        this.pos.x -= this.dx;
+        this.pos.x -= this.game.velocity;
     }
 
 }

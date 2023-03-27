@@ -9,7 +9,6 @@ class Lane {
 
        
         this.y0 = this.game.height * this.posLane;
-        console.log(this.y0)
    
         this.pos = {
             x: game.width * 0.4,
@@ -49,12 +48,9 @@ class Lane {
                 
                     this.player.setRandomQuality()
                     if (this.player.calidad >= 6 && this.player.pos.y === this.player.y0 && !this.obstacles[0].colisionada) {
-                        console.log("voy a saltar la valla", this.player.calidad)
-                        // console.log("VAMOS", this.game.background.dx)
 
                         if (this.game.velocity === 8) {
                             this.player.speed.y = -9.8;
-                            console.log("tengo velocidad 7 de juego")
 
                         } else {
                             this.player.speed.y = -9
@@ -65,7 +61,6 @@ class Lane {
                     } else if (this.player.calidad < 6 && this.player.pos.y === this.player.y0 && !this.obstacles[0].colisionada) {
                         if (this.game.velocity === 7) {
                             this.player.speed.y = -9;
-                            console.log("he saltado menos porque no tengo calidad suficiente")
                         } else {
                             this.player.speed.y = -8
                         }

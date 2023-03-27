@@ -13,7 +13,7 @@ const Game = {
 	boostVelocity: 2,
 	init() {
 		const canvas = document.querySelector('canvas');
-	
+
 		canvas.width = this.width;
 		canvas.height = this.height;
 
@@ -43,6 +43,9 @@ const Game = {
 		]
 
 
+		this.bso = new Audio('assets/theme.wav')
+		this.bso.play();
+		this.bso.loop = true;
 
 		// carril 1 = 0.63 .....0.695
 		// carril 2 = 0.705 .....0.745
@@ -63,23 +66,19 @@ const Game = {
 				this.lanes.forEach((lane, key) => {
 					lane.generateObstacle()
 
-				
-						lane.obstacles[lane.obstacles.length -1].pos.x -= 20 * key
-				
-					
-					
+
+					lane.obstacles[lane.obstacles.length - 1].pos.x -= 20 * key
+
+
 				})
 			}
-			// if (this.frameCounter % 95 === 0)  this.lane1.generateObstacle();
-			// if (this.frameCounter % 120 === 0) this.lane2.generateObstacle();
-			// if (this.frameCounter % 140 === 0) this.lane3.generateObstacle();
-			// if (this.frameCounter % 160 === 0) this.lane4.generateObstacle();
-			if (this.frameCounter % 255 === 0) this.generateBottle()
-			if (this.frameCounter === 1600) this.generateGoal();
 
+			if (this.frameCounter % 255 === 0) this.generateBottle()
+			if (this.frameCounter === 3600) this.generateGoal();
+			console.log(this.bottles)
 			this.drawAll();
 			this.moveAll();
-
+		
 
 			this.lanes.forEach(lane => {
 				lane.checkJump()
@@ -98,7 +97,6 @@ const Game = {
 
 		if (lane.player instanceof Player) {
 			if (this.isCollision(lane.obstacles, lane.player)) {
-				console.log("COLISIONA")
 				lane.player.stun()
 
 				this.npcs.forEach(npc => {
@@ -106,26 +104,25 @@ const Game = {
 				})
 			}
 
-			// if (this.goal) {
-			// 	const { goal } = this
-			// 	// console.log("ahora chocate")
-			// 	if (this.isCollision(goal, player) && !goal.alcanzada) {
-			// 		goal.alcanzada = true;
-			// 		// console.log("he colisionado con la meta")
-			// 		this.youWin()
-			// 	}
-			// }
+			if (this.goal) {
+				const { goal } = this
+				if (this.isCollision(goal, this.player) && !goal.alcanzada) {
+					goal.alcanzada = true;
+					this.youWin()
+				}
+			}
 
-			if (this.isCollision(this.bottles, this.player) && !this.bottles.colisionada) {
-
-				console.log("BEBE PERRO")
+			if (this.isCollision(this.bottles, this.player)) {
+				console.log("colision con botella")
+				const jumpEffect = new Audio('assets/SFX_Jump_01.wav')
+				jumpEffect.play();
 				lane.player.boost()
-
+				this.catchBottles()
 				this.npcs.forEach(npc => {
 					npc.rearrange(this.boostVelocity)
 				})
-			}
 
+			}
 
 		} else {
 
@@ -135,19 +132,18 @@ const Game = {
 			}
 
 
-			// if (this.goal) {
-			// 	const { goal } = this
-			// 	if (this.isCollision(goal, this.npc1) && !goal.alcanzada) {
-			// 		goal.alcanzada = true;
-			// 		this.youLose()
-			// 	} else if (this.isCollision(goal, this.npc2) && !goal.alcanzada) {
-			// 		goal.alcanzada = true;
-			// 		this.youLose()
-			// 	} else if (this.isCollision(goal, this.npc3) && !goal.alcanzada) {
-			// 		goal.alcanzada = true;
-			// 		this.youLose()
-			// 	}
-			// }
+			if (this.goal) {
+				const { goal } = this
+				this.npcs.forEach((npc) => {
+					if (this.isCollision(goal, npc) && !goal.alcanzada) {
+						goal.alcanzada = true;
+						this.youLose()
+					}
+
+				})
+
+			}
+
 		}
 	},
 
@@ -202,8 +198,17 @@ const Game = {
 		this.bottles = this.bottles.filter(
 			(bottle) => bottle.pos.x + bottle.width > 0
 		);
-
 	},
+
+	catchBottles() {
+		this.bottles = this.bottles.filter(
+			(bottle) => bottle.pos.x < 0
+		)
+	},
+
+	// catchBottles() {
+	// 	this.bottles = []
+	// },
 
 	clearGoal() {
 		this.goal = null;
@@ -261,7 +266,7 @@ const Game = {
 	},
 
 	youWin() {
-		console.log("has ganado")
+		this.bso.pause();
 		setTimeout(() => {
 			clearInterval(this.animationLoopId);
 			if (confirm('HAS GANADO LA CARRERA ¿VOLVER A EMPEZAR?')) {
@@ -273,7 +278,7 @@ const Game = {
 	},
 
 	youLose() {
-		console.log("has perdido")
+		this.bso.pause();
 		setTimeout(() => {
 			clearInterval(this.animationLoopId);
 			if (confirm('HAS PERDIDO LA CARRERA ¿VOLVER A EMPEZAR?')) {
