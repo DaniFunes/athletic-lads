@@ -47,11 +47,6 @@ const Game = {
 		this.bso.play();
 		this.bso.loop = true;
 
-		// carril 1 = 0.63 .....0.695
-		// carril 2 = 0.705 .....0.745
-		// carril 3 = 0.755 .....0.803
-		// carril 4 = 0.81 .... 0.865
-
 	},
 
 	start() {
@@ -69,13 +64,11 @@ const Game = {
 
 					lane.obstacles[lane.obstacles.length - 1].pos.x -= 20 * key
 
-
 				})
 			}
 
 			if (this.frameCounter % 255 === 0) this.generateBottle()
-			if (this.frameCounter === 3600) this.generateGoal();
-			console.log(this.bottles)
+			if (this.frameCounter === 200) this.generateGoal();
 			this.drawAll();
 			this.moveAll();
 		
@@ -86,6 +79,18 @@ const Game = {
 				lane.clearObstacles();
 				this.deleteObstacles(lane);
 			})
+
+			if (this.isCollisionBottles()) {
+				console.log("colision con botella")
+				const jumpEffect = new Audio('assets/SFX_Jump_01.wav')
+				jumpEffect.play();
+				this.player.boost()
+				
+				this.npcs.forEach(npc => {
+					npc.rearrange(this.boostVelocity)
+				})
+
+			}
 
 			this.clearBottles();
 		}, 1000 / this.fps);
@@ -112,17 +117,7 @@ const Game = {
 				}
 			}
 
-			if (this.isCollision(this.bottles, this.player)) {
-				console.log("colision con botella")
-				const jumpEffect = new Audio('assets/SFX_Jump_01.wav')
-				jumpEffect.play();
-				lane.player.boost()
-				this.catchBottles()
-				this.npcs.forEach(npc => {
-					npc.rearrange(this.boostVelocity)
-				})
-
-			}
+			
 
 		} else {
 
@@ -146,8 +141,6 @@ const Game = {
 
 		}
 	},
-
-
 
 	drawAll() {
 
@@ -198,17 +191,9 @@ const Game = {
 		this.bottles = this.bottles.filter(
 			(bottle) => bottle.pos.x + bottle.width > 0
 		);
+		console.log(this.bottles)
 	},
 
-	catchBottles() {
-		this.bottles = this.bottles.filter(
-			(bottle) => bottle.pos.x < 0
-		)
-	},
-
-	// catchBottles() {
-	// 	this.bottles = []
-	// },
 
 	clearGoal() {
 		this.goal = null;
@@ -234,21 +219,34 @@ const Game = {
 
 
 		}
-		else if (elemento[0] instanceof Bottle) {
-			return elemento.some((obj) =>
-				player.pos.x + player.width - 25 > obj.pos.x &&
-				player.pos.x < obj.pos.x + obj.width &&
-				player.pos.y + player.height - 10 > obj.pos.y &&
-				player.pos.y < obj.pos.y + obj.height
-			);
-
-		}
+		
 
 	},
 
+	isCollisionBottles() {
+		return this.bottles.some(bottle => {
+
+			const isCollision = this.player.pos.x + this.player.width > bottle.pos.x &&
+			this.player.pos.x < bottle.pos.x + bottle.width &&
+			// this.player.pos.y + this.player.height - 10 > bottle.pos.y &&
+			this.player.pos.y < bottle.pos.y + bottle.height + 30
+
+			//console.log(this.player.pos.x, this.player.width, bottle.pos.x, this.player.pos.y, bottle.pos.y, bottle.height )
+
+			if(isCollision) {
+				this.bottles = this.bottles.filter((b) => b !== bottle)
+				console.log("colisiona vaya que siii")
+			}
+
+			return isCollision
+
+
+		})
+	},
 
 	generateBottle() {
 		this.bottles.push(new Bottle(this));
+		console.log(this.bottles)
 	},
 
 	generateGoal() {
@@ -267,9 +265,14 @@ const Game = {
 
 	youWin() {
 		this.bso.pause();
+		const victory = new Audio('assets/Victory.ogg')
+		victory.play()
+
 		setTimeout(() => {
 			clearInterval(this.animationLoopId);
+			
 			if (confirm('HAS GANADO LA CARRERA ¿VOLVER A EMPEZAR?')) {
+				victory.pause()
 				this.goal.alcanzada = false;
 				this.init()
 			};
@@ -279,9 +282,12 @@ const Game = {
 
 	youLose() {
 		this.bso.pause();
+		const lose = new Audio('assets/lose.wav')
+		lose.play()
 		setTimeout(() => {
 			clearInterval(this.animationLoopId);
 			if (confirm('HAS PERDIDO LA CARRERA ¿VOLVER A EMPEZAR?')) {
+				lose.pause();
 				this.goal.alcanzada = false;
 				this.init()
 			};

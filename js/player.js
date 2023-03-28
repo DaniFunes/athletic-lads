@@ -30,7 +30,7 @@ class Player {
 
 		this.pos = {
 			x: game.width * 0.4,
-
+			y: undefined,
 		};
 
 		this.speed = {

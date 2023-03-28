@@ -15,11 +15,7 @@ class Npc {
                 frameIndex: 0,
 
             },
-            // fall: {
-            // 	img: createImage('assets/blue-slide.png'),
-            // 	frames: 12,
-            // 	frameIndex: 0,
-            // }	
+
         };
 
         this.game = game;
@@ -42,7 +38,7 @@ class Npc {
             y: 0,
         };
 
-        this.jumping  = false
+        this.jumping = false
         this.state = 'normal'
 
     }
@@ -90,7 +86,7 @@ class Npc {
     }
 
     move() {
-        if(this.pos.x < 0) {
+        if (this.pos.x < 0) {
             this.state = "normal"
         }
 
@@ -102,65 +98,49 @@ class Npc {
             this.speed.y = 0;
             this.pos.y = this.y0;
         }
-        
 
         this.pos.y += this.speed.y;
         this.pos.x += this.speed.x;
     }
 
-    // setVelocitySlow() {
-
-    //     if (this.speed.x >= 0) {
-      
-    //         console.log("LA VIDA PASA")
-    //         this.speed.x = -1
-    //         setTimeout(() => {
-    //             this.speed.x = 7 - this.game.velocity
-    //         }, 1500)
-    //     }
-
-       
-    // }
 
     getHeight() {
-		return this.currentSprite.img.height
-	}
+        return this.currentSprite.img.height
+    }
 
     setRandomQuality() {
 
-        // console.log("CALCULANDO")
         this.calidad = getRandomIntInclusive(1, 10);
-        // console.log(this.calidad)
     }
 
-    boost(){
-		this.state = 'boosted'
-	}
+    boost() {
+        this.state = 'boosted'
+    }
 
-	stun(){
-		
+    stun() {
+
         if (this.state !== 'stuned') {
-			this.state = 'stuned'
-			
-		
-			this.speed.x += this.game.stunVelocity
-		
-			setTimeout(() => {
-				this.speed.x = 0
-				this.state = 'normal'
+            this.state = 'stuned'
 
-			}, "1000");
-		}	
-	}
 
-    rearrange(velocity){
+            this.speed.x += this.game.stunVelocity
 
-        if(this.state === 'normal') {
+            setTimeout(() => {
+                this.speed.x = 0
+                this.state = 'normal'
+
+            }, "1000");
+        }
+    }
+
+    rearrange(velocity) {
+
+        if (this.state === 'normal') {
             this.state = 'rearrenged'
             this.speed.x += -velocity
         }
-        
-	}
+
+    }
 
     setNormalVelocity() {
         this.state = 'normal'

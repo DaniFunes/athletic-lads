@@ -13,7 +13,7 @@ class Bottle {
 
 		this.game = game;
 		this.colisionada = false;
-	
+
 	}
 
 	draw() {
