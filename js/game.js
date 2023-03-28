@@ -81,7 +81,6 @@ const Game = {
 			})
 
 			if (this.isCollisionBottles()) {
-				console.log("colision con botella")
 				const jumpEffect = new Audio('assets/SFX_Jump_01.wav')
 				jumpEffect.play();
 				this.player.boost()
@@ -103,7 +102,8 @@ const Game = {
 		if (lane.player instanceof Player) {
 			if (this.isCollision(lane.obstacles, lane.player)) {
 				lane.player.stun()
-
+				const collisionEffectSound = new Audio('assets/collision.mp3')
+				collisionEffectSound.play();
 				this.npcs.forEach(npc => {
 					npc.rearrange(this.stunVelocity)
 				})
@@ -191,7 +191,6 @@ const Game = {
 		this.bottles = this.bottles.filter(
 			(bottle) => bottle.pos.x + bottle.width > 0
 		);
-		console.log(this.bottles)
 	},
 
 
@@ -234,7 +233,6 @@ const Game = {
 
 			if(isCollision) {
 				this.bottles = this.bottles.filter((b) => b !== bottle)
-				console.log("colisiona vaya que siii")
 			}
 
 			return isCollision
@@ -250,7 +248,6 @@ const Game = {
 
 	generateGoal() {
 		this.goal = new Goal(this);
-		console.log("genero goal")
 	},
 
 	clear() {

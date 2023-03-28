@@ -61,8 +61,10 @@ class Player {
 				case JUMP:
 					if (this.y0 === this.pos.y) {
 						this.currentSprite = this.sprites.jump;
-						this.speed.y = -9;
+						this.speed.y = -8.8;
 						this.pos.y -= 1;
+						const jumpEffectSound = new Audio('assets/jump.mp3')
+						jumpEffectSound.play()
 					}
 					break;
 

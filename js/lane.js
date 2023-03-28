@@ -47,7 +47,7 @@ class Lane {
                     this.player.jumping = true
                 
                     this.player.setRandomQuality()
-                    if (this.player.calidad >= 6 && this.player.pos.y === this.player.y0 && !this.obstacles[0].colisionada) {
+                    if (this.player.calidad >= 5 && this.player.pos.y === this.player.y0 && !this.obstacles[0].colisionada) {
 
                         if (this.game.velocity === 8) {
                             this.player.speed.y = -9.8;
@@ -58,7 +58,7 @@ class Lane {
                         this.obstacles[0].colisionada = true;
                         this.player.currentSprite = this.player.sprites.jump;
                         this.player.pos.y -= 1;
-                    } else if (this.player.calidad < 6 && this.player.pos.y === this.player.y0 && !this.obstacles[0].colisionada) {
+                    } else if (this.player.calidad < 5 && this.player.pos.y === this.player.y0 && !this.obstacles[0].colisionada) {
                         if (this.game.velocity === 7) {
                             this.player.speed.y = -9;
                         } else {
