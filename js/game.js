@@ -68,7 +68,7 @@ const Game = {
 			}
 
 			if (this.frameCounter % 255 === 0) this.generateBottle()
-			if (this.frameCounter === 200) this.generateGoal();
+			if (this.frameCounter === 2700) this.generateGoal();
 			this.drawAll();
 			this.moveAll();
 		
@@ -231,7 +231,6 @@ const Game = {
 			// this.player.pos.y + this.player.height - 10 > bottle.pos.y &&
 			this.player.pos.y < bottle.pos.y + bottle.height + 30
 
-			//console.log(this.player.pos.x, this.player.width, bottle.pos.x, this.player.pos.y, bottle.pos.y, bottle.height )
 
 			if(isCollision) {
 				this.bottles = this.bottles.filter((b) => b !== bottle)
