@@ -108,7 +108,7 @@ class Player {
 	}
 
 	move() {
-		const gravity = 0.75;
+		const gravity = 0.74;
 
 		if (this.pos.y < this.y0) {
 			this.speed.y += gravity;

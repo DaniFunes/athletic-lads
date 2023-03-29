@@ -42,15 +42,14 @@ const Game = {
 			new Lane(0.84, this, this.npcs[2]),
 		]
 
-
+		this.bso = new Audio('assets/theme.wav')
+		this.bso.play();
+		this.bso.loop = true;
 
 	},
 
 	start() {
 		this.frameCounter = 0;
-		this.bso = new Audio('assets/theme.wav')
-		this.bso.play();
-		this.bso.loop = true;
 		
 		this.animationLoopId = setInterval(() => {
 			this.clear();

@@ -19,16 +19,27 @@
 	<style>
 		body {
 			margin: 0;
+			display: flex;
+			justify-content: center;
 		}
 
 		canvas {
-			display: block;
+			display: none;
+		}
+
+		main {
+			padding: 20px;
 		}
 	</style>
 	<title>ATHLETIC LADS</title>
 </head>
 
 <body>
+	<main>
+		<h1>ATHLETIC LADS</h1>
+		<p>Pulsa "Espacio" para saltar las vallas. Tu jugador está en el carril 1, en la parte superior, de color azul. Coge las botellas para acelerar tu ritmo y llegar primero a la meta. Si no logras saltar las vallas ralentizas tu velocidad y los competidores te alcanzarán</p>
+		<button id="startButton">EMPEZAR</button>
+	</main>
 	<canvas></canvas>
 </body>
 
